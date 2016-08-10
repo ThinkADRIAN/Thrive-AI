@@ -43,3 +43,10 @@ group :development, :test do
   gem 'spring'
 end
 
+# Twilio Integration
+# https://www.twilio.com/blog/2016/04/receive-and-reply-to-sms-in-rails.html
+gem 'twilio-ruby', '~> 4.11.1'
+
+# Secure Configuration Vales
+gem 'figaro'
+
