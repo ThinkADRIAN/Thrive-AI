@@ -3,17 +3,17 @@ class MessagesController < ApplicationController
 
   def reply
     message_body = params["Body"]
-    from_number = params["From"]
-    boot_api_ai
-    response = @ai_client.text_request message_body
-    ai_response = response[:result][:speech]
+    @from_number = params["From"]
 
     boot_twilio
-    sms = @client.messages.create(
-                              from: ENV["twilio_number"],
-                              to: from_number,
-                              body: ai_response
-    )
+    boot_api_ai
+
+    @ai_response = @ai_client.text_request message_body
+    @ai_message = @ai_response[:result][:speech]
+
+    sms = send_message(@from_number, @ai_message)
+
+    #handle_action
   end
 
   private
@@ -24,13 +24,22 @@ class MessagesController < ApplicationController
     @client = Twilio::REST::Client.new account_sid, auth_token
   end
 
+  def send_message(recipient_number, message)
+    @client.messages.create(
+        from: ENV["twilio_number"],
+        to: recipient_number,
+        body: message
+    )
+  end
+
   def boot_api_ai
     @ai_client = ApiAiRuby::Client.new(
                                       client_access_token: ENV["api_ai_client_access_token"]
     )
   end
 
-  @ai_client = ApiAiRuby::Client.new(
-      client_access_token: '5f423ed0ba4f4ef3a427a56185889232'
-  )
+  def handle_action
+    @ai_action = @ai_response[:result][:action]
+    send_message(@from_number, @ai_action)
+  end
 end
