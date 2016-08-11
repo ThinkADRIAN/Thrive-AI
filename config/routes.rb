@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :thrivers
   resources :messages do
     collection do
       post 'reply'
