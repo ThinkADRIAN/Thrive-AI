@@ -50,3 +50,6 @@ gem 'twilio-ruby', '~> 4.11.1'
 # Secure Configuration Vales
 gem 'figaro'
 
+# Artificial Intelligence
+gem 'api-ai-ruby'
+
