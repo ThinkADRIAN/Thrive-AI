@@ -5,6 +5,13 @@ class MessagesController < ApplicationController
     message_body = params["Body"]
     @from_number = params["From"]
 
+    if Thriver.exists?(phone_number: @from_number)
+      @current_thriver = Thriver.find_by(phone_number: @from_number)
+    else
+      @current_thriver = Thriver.new(phone_number: @from_number, password: @from_number)
+      @current_thriver.save
+    end
+
     boot_twilio
     boot_api_ai
 
