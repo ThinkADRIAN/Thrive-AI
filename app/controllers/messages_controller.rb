@@ -52,7 +52,7 @@ class MessagesController < ApplicationController
   def handle_contexts(ai_response)
     ai_contexts = get_contexts(ai_response)
     if ai_contexts.include?("join-init")
-      ai_response = @ai_client.text_request "declare_bot_purpose", :contexts => ["join"]
+      ai_response = @ai_client.text_request "declare_bot_purpose", contexts: ["join"],  resestContexts: true
       ai_message = ai_response[:result][:speech]
       sms = send_message(@from_number, ai_message)
     end
