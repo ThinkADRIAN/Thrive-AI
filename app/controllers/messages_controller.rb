@@ -8,12 +8,13 @@ class MessagesController < ApplicationController
     boot_twilio
     boot_api_ai
 
-    @ai_response = @ai_client.text_request message_body
-    @ai_message = @ai_response[:result][:speech]
+    ai_response = @ai_client.text_request message_body
+    @ai_message = ai_response[:result][:speech]
 
     sms = send_message(@from_number, @ai_message)
 
-    #handle_action
+    handle_contexts(ai_response)
+    #handle_action(ai_response)
   end
 
   private
@@ -38,8 +39,27 @@ class MessagesController < ApplicationController
     )
   end
 
-  def handle_action
-    @ai_action = @ai_response[:result][:action]
-    send_message(@from_number, @ai_action)
+  def get_contexts(ai_response)
+    ai_contexts = []
+
+    ai_response[:result][:contexts].each do |context|
+      ai_contexts.push(context[:name])
+    end
+
+    ai_contexts
+  end
+
+  def handle_contexts(ai_response)
+    ai_contexts = get_contexts(ai_response)
+    if ai_contexts.include?("join-init")
+      ai_response = @ai_client.text_request "declare_bot_purpose", :contexts => ["join"]
+      ai_message = ai_response[:result][:speech]
+      sms = send_message(@from_number, ai_message)
+    end
+  end
+
+  def handle_action(ai_response)
+    ai_action = ai_response[:result][:action]
+    send_message(@from_number, ai_action)
   end
 end
