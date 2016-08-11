@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  joy: 1
+  thriver_id: 1
+
+two:
+  joy: 1
+  thriver_id: 1
