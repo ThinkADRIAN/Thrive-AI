@@ -95,7 +95,7 @@ class MessagesController < ApplicationController
         user_joy_rating = ai_response[:result][:parameters][:joy_rating]
         @current_thriver.ratings.create(joy: user_joy_rating)
       when 'submit_instruction'
-        user_instruction = ai_response[:result][:parameters[:userinstructions]]
+        user_instruction = ai_response[:result][:parameters[:user_instructions]]
 
         case user_instruction
           when 'help_self'
