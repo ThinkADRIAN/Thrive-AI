@@ -27,14 +27,14 @@ class MessagesController < ApplicationController
   private
 
   def boot_twilio
-    account_sid = ENV['twilio_sid']
-    auth_token = ENV['twilio_token']
+    account_sid = ENV['TWILIO_SID']
+    auth_token = ENV['TWILIO_TOKEN']
     @client = Twilio::REST::Client.new account_sid, auth_token
   end
 
   def send_message(recipient_number, message)
     @client.messages.create(
-        from: ENV['twilio_number'],
+        from: ENV['TWILIO_NUMBER'],
         to: recipient_number,
         body: message
     )
@@ -42,7 +42,7 @@ class MessagesController < ApplicationController
 
   def boot_api_ai
     @ai_client = ApiAiRuby::Client.new(
-                                      client_access_token: ENV['api_ai_client_access_token']
+                                      client_access_token: ENV['API_AI_CLIENT_ACCESS_TOKEN']
     )
   end
 
