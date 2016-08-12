@@ -83,6 +83,8 @@ class MessagesController < ApplicationController
         send_follow_up_message(from_number, 'request_user_joy_rating', [], false)
       when ai_contexts.include?('user-joy-rating-received')
         send_follow_up_message(from_number, 'request_user_instruction', [], true)
+      when ai_contexts.include?('bot-purpose-delivered')
+        send_follow_up_message(from_number, 'request_user_instruction', [], true)
       when ai_contexts.include?('user-instruction-received')
       else
 
@@ -97,7 +99,7 @@ class MessagesController < ApplicationController
         user_joy_rating = ai_response[:result][:parameters][:joy_rating]
         @current_thriver.ratings.create(joy: user_joy_rating)
       when 'submit_instruction'
-        user_instruction = ai_response[:result][:parameters[:user_instructions]]
+        user_instruction = ai_response[:result][:parameters][:user_instructions]
 
         case user_instruction
           when 'help_self'
