@@ -22,6 +22,7 @@ class MessagesController < ApplicationController
 
     handle_contexts(from_number, ai_response)
     handle_action(ai_response)
+  end
 
   private
 
@@ -82,6 +83,7 @@ class MessagesController < ApplicationController
         send_follow_up_message(from_number, 'request_user_joy_rating', [], false)
       when ai_contexts.include?('user-joy-rating-received')
         send_follow_up_message(from_number, 'request_user_instruction', [], true)
+      when ai_contexts.include?('user-instruction-received')
       else
 
     end
