@@ -15,7 +15,7 @@ class MessagesController < ApplicationController
     boot_twilio
     boot_api_ai
 
-    ai_response = get_ai_response(message_body)
+    ai_response = get_ai_response(message_body, [], false)
     ai_message = ai_response[:result][:speech]
 
     sms = send_message(from_number, ai_message)
