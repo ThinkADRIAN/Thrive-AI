@@ -76,28 +76,37 @@ class MessagesController < ApplicationController
   def handle_contexts(from_number, ai_response)
     ai_contexts = get_contexts(ai_response)
 
-    if ai_contexts.include?('greeting-responded-to')
-      send_follow_up_message(from_number, 'declare_bot_purpose', [], true)
-      send_follow_up_message(from_number, 'request_user_joy_rating', [], false)
-    elsif ai_contexts.include?('user-joy-rating-received')
-      send_follow_up_message(from_number, 'request_user_instruction', [], true)
+    case
+      when ai_contexts.include?('greeting-responded-to')
+        send_follow_up_message(from_number, 'declare_bot_purpose', [], true)
+        send_follow_up_message(from_number, 'request_user_joy_rating', [], false)
+      when ai_contexts.include?('user-joy-rating-received')
+        send_follow_up_message(from_number, 'request_user_instruction', [], true)
+      else
+
     end
   end
 
   def handle_action(ai_response)
     ai_action = ai_response[:result][:action]
 
-    if ai_action == 'create_joy_rating'
-      ai_joy_rating = ai_response[:result][:parameters][:joy_rating]
-      @current_thriver.ratings.create(joy: ai_joy_rating)
-    elsif ai_action == 'submit_instruction'
-      ai_instruction = ai_response[:result][:parameters[:userinstructions]]
+    case ai_action
+      when 'create_joy_rating'
+        user_joy_rating = ai_response[:result][:parameters][:joy_rating]
+        @current_thriver.ratings.create(joy: user_joy_rating)
+      when 'submit_instruction'
+        user_instruction = ai_response[:result][:parameters[:userinstructions]]
 
-      if ai_instruction == 'help_self'
+        case user_instruction
+          when 'help_self'
 
-      elsif ai_instruction == 'help_other'
+          when 'help_other'
 
-      end
+          else
+
+        end
+      else
+
     end
   end
 end
