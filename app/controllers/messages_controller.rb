@@ -91,9 +91,17 @@ class MessagesController < ApplicationController
         if decision == 'yes'
           send_message_script(from_number, 'how it works')
         else
-          send_follow_up_message(from_number, 'respond_to_how_it_works_denial', [], true)
+          send_follow_up_message(from_number, 'respond_to_how_it_works_denial', ['how-it-works-denied'], true)
         end
         send_follow_up_message(from_number, 'request_decision_to_start_demo', [], true)
+      when ai_contexts.include?('decision-to-start-demo-received')
+        decision = ai_response[:result][:parameters][:yes_or_no]
+        if decision == 'yes'
+          send_message(from_number, 'TEST: Start Demo')
+        else
+          send_follow_up_message(from_number, 'respond_to_start_demo_denial', ['start-demo-denied'], true)
+        end
+        #send_follow_up_message(from_number, 'request_decision_to_start_demo', [], true)
       when ai_contexts.include?('user-joy-rating-received')
         respond_to_user_joy_rating(from_number, ai_response)
       when ai_contexts.include?('user-instruction-received')
