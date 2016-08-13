@@ -22,8 +22,8 @@ class MessagesController < ApplicationController
       sms = send_message(from_number, ai_message)
     end
 
-    handle_contexts(from_number, ai_response)
     handle_action(from_number, ai_response)
+    handle_contexts(from_number, ai_response)
   end
 
   private
@@ -80,13 +80,16 @@ class MessagesController < ApplicationController
     ai_contexts = get_contexts(ai_response)
 
     case
-      when ai_contexts.include?('greeting-responded-to')
+      when ai_contexts.include?('greeting-delivered')
         send_follow_up_message(from_number, 'declare_bot_purpose', [], true)
-        send_follow_up_message(from_number, 'request_user_joy_rating', [], false)
+        send_follow_up_message(from_number, 'request_decision_to_send_how_it_works', [], true)
+        #send_follow_up_message(from_number, 'request_user_joy_rating', [], false)
+      when ai_contexts.include?('bot-purpose-delivered')
+        send_follow_up_message(from_number, 'request_decision_to_send_how_it_works', ['decision-to-send-how-it-works-requested'], true)
+      when ai_contexts.include?('decision-to-send-how-it-works-received')
+        send_follow_up_message(from_number, 'send_how_it_works_script', [], true)
       when ai_contexts.include?('user-joy-rating-received')
         respond_to_user_joy_rating(from_number, ai_response)
-      when ai_contexts.include?('bot-purpose-delivered')
-        send_follow_up_message(from_number, 'request_user_instruction', [], true)
       when ai_contexts.include?('user-instruction-received')
       else
 
@@ -111,6 +114,14 @@ class MessagesController < ApplicationController
           else
 
         end
+      when 'send_how_it_works_script'
+        decision = ai_response[:result][:parameters][:yes_or_no]
+        if decision == 'yes'
+          send_message_script(from_number, 'how it works')
+        else
+          send_follow_up_message(from_number, 'respond_to_how_it_works_denial', ['how-it-works-denied'], true)
+        end
+        send_follow_up_message(from_number, 'request_decision_after_how_it_works', ['how-it-works-delivered'], true)
       else
 
     end
@@ -131,6 +142,27 @@ class MessagesController < ApplicationController
         send_follow_up_message(from_number, 'respond_to_user_joy_rating_1_3', [], true)
       else
 
+    end
+  end
+
+  def send_message_script(recipient_number, script_title)
+    messages = get_message_script(script_title)
+
+    messages.each do |message|
+      send_message(recipient_number, message)
+    end
+  end
+
+  def get_message_script(script_title)
+    case script_title
+      when 'how it works'
+        [
+            'I can connect you to our network of Thrivers from all over the world.',
+            'It is completely anonymous, so you can share openly without fear',
+            'You can get help from the community and give help to people facing challenges',
+            'Helping others is a great way to pay it forward!'
+        ]
+      else
     end
   end
 end
