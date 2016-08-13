@@ -85,9 +85,15 @@ class MessagesController < ApplicationController
         send_follow_up_message(from_number, 'request_decision_to_send_how_it_works', [], true)
         #send_follow_up_message(from_number, 'request_user_joy_rating', [], false)
       when ai_contexts.include?('bot-purpose-delivered')
-        send_follow_up_message(from_number, 'request_decision_to_send_how_it_works', ['decision-to-send-how-it-works-requested'], true)
+        send_follow_up_message(from_number, 'request_decision_to_send_how_it_works', [], true)
       when ai_contexts.include?('decision-to-send-how-it-works-received')
-        send_follow_up_message(from_number, 'send_how_it_works_script', [], true)
+        decision = ai_response[:result][:parameters][:yes_or_no]
+        if decision == 'yes'
+          send_message_script(from_number, 'how it works')
+        else
+          send_follow_up_message(from_number, 'respond_to_how_it_works_denial', [], true)
+        end
+        send_follow_up_message(from_number, 'request_decision_to_start_demo', [], true)
       when ai_contexts.include?('user-joy-rating-received')
         respond_to_user_joy_rating(from_number, ai_response)
       when ai_contexts.include?('user-instruction-received')
@@ -114,14 +120,6 @@ class MessagesController < ApplicationController
           else
 
         end
-      when 'send_how_it_works_script'
-        decision = ai_response[:result][:parameters][:yes_or_no]
-        if decision == 'yes'
-          send_message_script(from_number, 'how it works')
-        else
-          send_follow_up_message(from_number, 'respond_to_how_it_works_denial', ['how-it-works-denied'], true)
-        end
-        send_follow_up_message(from_number, 'request_decision_after_how_it_works', ['how-it-works-delivered'], true)
       else
 
     end
