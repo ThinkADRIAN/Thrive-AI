@@ -18,10 +18,12 @@ class MessagesController < ApplicationController
     ai_response = get_ai_response(message_body, [], false)
     ai_message = ai_response[:result][:speech]
 
-    sms = send_message(from_number, ai_message)
+    if ai_message.present?
+      sms = send_message(from_number, ai_message)
+    end
 
     handle_contexts(from_number, ai_response)
-    handle_action(ai_response)
+    handle_action(from_number, ai_response)
   end
 
   private
@@ -82,7 +84,7 @@ class MessagesController < ApplicationController
         send_follow_up_message(from_number, 'declare_bot_purpose', [], true)
         send_follow_up_message(from_number, 'request_user_joy_rating', [], false)
       when ai_contexts.include?('user-joy-rating-received')
-        send_follow_up_message(from_number, 'request_user_instruction', [], true)
+        respond_to_user_joy_rating(from_number, ai_response)
       when ai_contexts.include?('bot-purpose-delivered')
         send_follow_up_message(from_number, 'request_user_instruction', [], true)
       when ai_contexts.include?('user-instruction-received')
@@ -91,7 +93,7 @@ class MessagesController < ApplicationController
     end
   end
 
-  def handle_action(ai_response)
+  def handle_action(from_number, ai_response)
     ai_action = ai_response[:result][:action]
 
     case ai_action
@@ -109,6 +111,24 @@ class MessagesController < ApplicationController
           else
 
         end
+      else
+
+    end
+  end
+
+  def respond_to_user_joy_rating(from_number, ai_response)
+    user_joy_rating = ai_response[:result][:parameters][:joy_rating].to_i
+
+    case
+      when user_joy_rating.between?(8,10)
+        # Suggest give help
+        send_follow_up_message(from_number, 'respond_to_user_joy_rating_8_10', [], true)
+      when user_joy_rating.between?(4,7)
+        # Suggest both
+        send_follow_up_message(from_number, 'respond_to_user_joy_rating_4_7', [], true)
+      when user_joy_rating.between?(1,3)
+        # Suggest get help
+        send_follow_up_message(from_number, 'respond_to_user_joy_rating_1_3', [], true)
       else
 
     end
