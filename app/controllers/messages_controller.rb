@@ -97,7 +97,10 @@ class MessagesController < ApplicationController
       when ai_contexts.include?('decision-to-start-demo-received')
         decision = ai_response[:result][:parameters][:yes_or_no]
         if decision == 'yes'
-          send_message(from_number, 'TEST: Start Demo')
+          send_message_script(from_number, 'the thrive community')
+          # TODO: insert request for response
+          send_message_script(from_number, 'defining support')
+          send_follow_up_message(from_number, 'request_decision_to_start_practice', [], true)
         else
           send_follow_up_message(from_number, 'respond_to_start_demo_denial', ['start-demo-denied'], true)
           send_follow_up_message(from_number, 'request_user_instruction', [], true)
@@ -167,6 +170,21 @@ class MessagesController < ApplicationController
             'It is completely anonymous, so you can share openly without fear',
             'You can get help from the community and give help to people facing challenges',
             'Helping others is a great way to pay it forward!'
+        ]
+      when 'the thrive community'
+        [
+            'Let me start with the power of our community',
+            'Thrive is a positive and supportive community!',
+            'No one is perfect and we don’t expect anyone to be.',
+            'This is a place to help your self and others.',
+        ]
+      when 'defining support'
+        [
+            'The type of support we give can be different than most people are used to…',
+            'We focus on providing HOPE rather than solutions.',
+            'When you’re not feeling at your best, it can suck to be told what to do.',
+            'Some people try to help by saying, “JUST DO THIS”',
+            'That’s why we help people to find the ‘Silver Lining’ aka HOPE!'
         ]
       else
     end
