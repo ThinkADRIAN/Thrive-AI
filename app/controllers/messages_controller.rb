@@ -100,8 +100,8 @@ class MessagesController < ApplicationController
           send_message(from_number, 'TEST: Start Demo')
         else
           send_follow_up_message(from_number, 'respond_to_start_demo_denial', ['start-demo-denied'], true)
+          send_follow_up_message(from_number, 'request_user_instruction', [], true)
         end
-        #send_follow_up_message(from_number, 'request_decision_to_start_demo', [], true)
       when ai_contexts.include?('user-joy-rating-received')
         respond_to_user_joy_rating(from_number, ai_response)
       when ai_contexts.include?('user-instruction-received')
