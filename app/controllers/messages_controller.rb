@@ -70,10 +70,6 @@ class MessagesController < ApplicationController
     ai_contexts
   end
 
-  def reset_contexts
-    @ai_client.text_request resetContexts: true
-  end
-
   def send_follow_up_message(recipient_number, message, context_input, reset_context_flag)
     ai_response = get_ai_response(message, context_input, reset_context_flag)
     ai_message = ai_response[:result][:speech]
@@ -137,10 +133,8 @@ class MessagesController < ApplicationController
         end
       when 'tell_user_how_it_works'
         send_message_script(from_number, 'how it works')
-        reset_contexts
       when 'send_directions'
         send_message_script(from_number, 'a little help for our friends')
-        reset_contexts
       else
 
     end
