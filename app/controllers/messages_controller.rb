@@ -70,6 +70,10 @@ class MessagesController < ApplicationController
     ai_contexts
   end
 
+  def reset_contexts
+    @ai_client.text_request resetContexts: true
+  end
+
   def send_follow_up_message(recipient_number, message, context_input, reset_context_flag)
     ai_response = get_ai_response(message, context_input, reset_context_flag)
     ai_message = ai_response[:result][:speech]
@@ -103,13 +107,13 @@ class MessagesController < ApplicationController
           send_follow_up_message(from_number, 'request_decision_to_start_practice', [], true)
         else
           send_follow_up_message(from_number, 'respond_to_start_demo_denial', ['start-demo-denied'], true)
-          send_follow_up_message(from_number, 'request_user_instruction', [], true)
+          # TODO: insert request for response
         end
       when ai_contexts.include?('user-joy-rating-received')
         respond_to_user_joy_rating(from_number, ai_response)
       when ai_contexts.include?('user-instruction-received')
       else
-        send_follow_up_message(from_number, 'request_user_instruction', [], true)
+        # TODO: insert request for response
     end
   end
 
@@ -131,6 +135,12 @@ class MessagesController < ApplicationController
           else
 
         end
+      when 'tell_user_how_it_works'
+        send_message_script(from_number, 'how it works')
+        reset_contexts
+      when 'send_directions'
+        send_message_script(from_number, 'a little help for our friends')
+        reset_contexts
       else
 
     end
@@ -185,6 +195,12 @@ class MessagesController < ApplicationController
             'When you’re not feeling at your best, it can suck to be told what to do.',
             'Some people try to help by saying, “JUST DO THIS”',
             'That’s why we help people to find the ‘Silver Lining’ aka HOPE!'
+        ]
+      when 'a little help for our friends'
+        [
+            'Looks like you could use a little assistance',
+            'Here are some suggested things I know how to respond to...',
+            'Hi! | What is your purpose? | How does this work? '
         ]
       else
     end
