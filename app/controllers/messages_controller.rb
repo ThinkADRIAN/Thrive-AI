@@ -109,7 +109,7 @@ class MessagesController < ApplicationController
         respond_to_user_joy_rating(from_number, ai_response)
       when ai_contexts.include?('user-instruction-received')
       else
-
+        send_follow_up_message(from_number, 'request_user_instruction', [], true)
     end
   end
 
