@@ -8,7 +8,8 @@ class MessagesController < ApplicationController
     if Thriver.exists?(phone_number: from_number)
       @current_thriver = Thriver.find_by(phone_number: from_number)
     else
-      @current_thriver = Thriver.new(phone_number: from_number, password: from_number)
+      unique_email = from_number + "@thrive.ai"
+      @current_thriver = Thriver.new(email: unique_email, phone_number: from_number, password: from_number)
       @current_thriver.save
     end
 
@@ -133,8 +134,10 @@ class MessagesController < ApplicationController
         end
       when 'tell_user_how_it_works'
         send_message_script(from_number, 'how it works')
+        send_follow_up_message(from_number, 'request_decision_to_start_demo', [], true)
       when 'send_directions'
         send_message_script(from_number, 'a little help for our friends')
+        # TODO: insert request for response
       else
 
     end
