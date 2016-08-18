@@ -173,31 +173,19 @@ class MessagesController < ApplicationController
     case script_title
       when 'how it works'
         [
-            'I can connect you to our network of Thrivers from all over the world.',
-            'It is completely anonymous, so you can share openly without fear',
-            'You can get help from the community and give help to people facing challenges',
-            'Helping others is a great way to pay it forward!'
+            'I can connect you to our network of Thrivers from all over the world. It is completely anonymous, so you can share openly without fear. You can get help from the community and give help to people facing challenges. Helping others is a great way to pay it forward!'
         ]
       when 'the thrive community'
         [
-            'Let me start with the power of our community',
-            'Thrive is a positive and supportive community!',
-            'No one is perfect and we don’t expect anyone to be.',
-            'This is a place to help your self and others.',
+            'Let me start with the power of our community. Thrive is a positive and supportive community! No one is perfect and we don’t expect anyone to be. This is a place to help your self and others.',
         ]
       when 'defining support'
         [
-            'The type of support we give can be different than most people are used to…',
-            'We focus on providing HOPE rather than solutions.',
-            'When you’re not feeling at your best, it can suck to be told what to do.',
-            'Some people try to help by saying, “JUST DO THIS”',
-            'That’s why we help people to find the ‘Silver Lining’ aka HOPE!'
+            'The type of support we give can be different than most people are used to… We focus on providing HOPE rather than solutions. When you’re not feeling at your best, it can suck to be told what to do. Some people try to help by saying, “JUST DO THIS”. That’s why we help people to find the ‘Silver Lining’ aka HOPE!'
         ]
       when 'a little help for our friends'
         [
-            'Looks like you could use a little assistance',
-            'Here are some suggested things I know how to respond to...',
-            'Hi! | What is your purpose? | How does this work? '
+            'Looks like you could use a little assistance. Here are some suggested things I know how to respond to... [ Hi! | What is your purpose? | How does this work? ].'
         ]
       else
     end
